@@ -1,0 +1,36 @@
+{
+  "login": {
+    "title": "登录您的账户",
+    "emailPlaceholder": "邮箱地址",
+    "passwordPlaceholder": "密码",
+    "submit": "登录",
+    "registerPrompt": "没有账号？注册",
+    "failed": "登录失败"
+  },
+  "register": {
+    "title": "创建您的账户",
+    "namePlaceholder": "全名",
+    "emailPlaceholder": "邮箱地址",
+    "passwordPlaceholder": "密码",
+    "submit": "注册",
+    "loginPrompt": "已有账号？登录",
+    "failed": "注册失败"
+  },
+  "dashboard": {
+    "title": "Ltodo",
+    "welcome": "欢迎, {{name}}",
+    "logout": "退出登录",
+    "taskPlaceholder": "需要做什么？",
+    "addTask": "添加任务",
+    "status": "状态",
+    "priority": "优先级",
+    "edit": "编辑",
+    "delete": "删除",
+    "noTasks": "暂无任务。在上方创建一个吧！"
+  },
+  "common": {
+    "language": "语言",
+    "chinese": "中文",
+    "english": "英文"
+  }
+}

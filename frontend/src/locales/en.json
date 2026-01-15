@@ -1,0 +1,36 @@
+{
+  "login": {
+    "title": "Sign in to your account",
+    "emailPlaceholder": "Email address",
+    "passwordPlaceholder": "Password",
+    "submit": "Sign in",
+    "registerPrompt": "Don't have an account? Sign up",
+    "failed": "Login failed"
+  },
+  "register": {
+    "title": "Create your account",
+    "namePlaceholder": "Full Name",
+    "emailPlaceholder": "Email address",
+    "passwordPlaceholder": "Password",
+    "submit": "Sign up",
+    "loginPrompt": "Already have an account? Sign in",
+    "failed": "Registration failed"
+  },
+  "dashboard": {
+    "title": "Ltodo",
+    "welcome": "Welcome, {{name}}",
+    "logout": "Logout",
+    "taskPlaceholder": "What needs to be done?",
+    "addTask": "Add Task",
+    "status": "Status",
+    "priority": "Priority",
+    "edit": "Edit",
+    "delete": "Delete",
+    "noTasks": "No tasks yet. Create one above!"
+  },
+  "common": {
+    "language": "Language",
+    "chinese": "Chinese",
+    "english": "English"
+  }
+}
