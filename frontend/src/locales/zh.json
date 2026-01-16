@@ -17,7 +17,7 @@
     "failed": "注册失败"
   },
   "dashboard": {
-    "title": "Ltodo",
+    "title": "LTodos",
     "welcome": "欢迎, {{name}}",
     "logout": "退出登录",
     "taskPlaceholder": "需要做什么？",

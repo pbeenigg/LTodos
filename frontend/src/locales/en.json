@@ -17,7 +17,7 @@
     "failed": "Registration failed"
   },
   "dashboard": {
-    "title": "Ltodo",
+    "title": "LTodos",
     "welcome": "Welcome, {{name}}",
     "logout": "Logout",
     "taskPlaceholder": "What needs to be done?",
