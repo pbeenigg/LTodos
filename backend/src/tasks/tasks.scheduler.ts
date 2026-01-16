@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan, Not, IsNull } from 'typeorm';
+import { Repository, Not, IsNull } from 'typeorm';
 import { Task, TaskStatus } from '../entities/task.entity';
 import { RRule } from 'rrule';
 
@@ -14,31 +14,6 @@ export class TasksScheduler {
     private tasksRepository: Repository<Task>,
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
-  async handleReminders() {
-    // This logic should ideally be: Find tasks where reminderTime <= now AND notification NOT sent.
-    // Since we don't have a Notification entity or 'reminded' flag in this simplified version,
-    // I will just log the tasks that are due for reminder.
-    // In a real app, we would update a flag to avoid spamming.
-    
-    const now = new Date();
-    const tasksToRemind = await this.tasksRepository.find({
-        where: {
-            reminderTime: LessThan(now),
-            status: Not(TaskStatus.DONE),
-        }
-    });
-
-    if (tasksToRemind.length > 0) {
-        this.logger.log(`Found ${tasksToRemind.length} tasks to remind.`);
-        // Send notification logic here (WebSocket/Email)
-        tasksToRemind.forEach(task => {
-            this.logger.log(`Reminder for task: ${task.title} (ID: ${task.id})`);
-            // Update reminderTime to null or next reminder to avoid re-triggering immediately
-        });
-    }
-  }
-
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async handleRecurringTasks() {
     this.logger.log('Checking for recurring tasks...');
@@ -47,20 +22,50 @@ export class TasksScheduler {
         where: { recurrenceRule: Not(IsNull()) }
     });
 
+    const now = new Date();
+
     for (const task of recurringTasks) {
         try {
-            const rule = RRule.fromString(task.recurrenceRule);
-            const nextOccurrence = rule.after(new Date());
+            // Parse options and force dtstart to be consistent
+            const ruleOptions = RRule.parseString(task.recurrenceRule);
+            // If dtstart is not in the rule string, rrule uses new Date() which is bad for consistency.
+            // We force dtstart to be the task creation time (or original due date if available).
+            if (!ruleOptions.dtstart) {
+                ruleOptions.dtstart = task.dueDate || task.createdAt;
+            }
             
-            if (nextOccurrence && nextOccurrence <= new Date()) {
-                // Time to create a new instance
-                this.logger.log(`Creating next instance for recurring task: ${task.title}`);
-                // Create new task logic...
-                // const newTask = this.tasksRepository.create({ ...task, id: undefined, createdAt: undefined, ... });
-                // await this.tasksRepository.save(newTask);
+            const rule = new RRule(ruleOptions);
+
+            // We want the next occurrence after the last one we generated.
+            // If we haven't generated any, we look for the first one after creation/start.
+            const lastRun = task.lastRecurrenceDate || ruleOptions.dtstart;
+            
+            // strictly after lastRun
+            const nextOccurrence = rule.after(lastRun);
+            
+            if (nextOccurrence && nextOccurrence <= now) {
+                this.logger.log(`Creating next instance for recurring task: ${task.title} (due: ${nextOccurrence})`);
+                
+                // Clone task
+                // We exclude properties that shouldn't be copied
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                const { id, createdAt, updatedAt, recurrenceRule, lastRecurrenceDate, subtasks, history, comments, ...taskData } = task;
+
+                const newTask = this.tasksRepository.create({
+                    ...taskData,
+                    status: TaskStatus.TODO,
+                    dueDate: nextOccurrence, // Set due date to the occurrence date
+                    recurrenceRule: null, // Instance does not recurse
+                });
+
+                await this.tasksRepository.save(newTask);
+
+                // Update original task's lastRecurrenceDate
+                task.lastRecurrenceDate = nextOccurrence;
+                await this.tasksRepository.save(task);
             }
         } catch (e) {
-            this.logger.error(`Failed to parse recurrence rule for task ${task.id}`, e);
+            this.logger.error(`Failed to process recurring task ${task.id}`, e);
         }
     }
   }

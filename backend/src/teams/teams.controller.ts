@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards, Request, Delete } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TeamsService } from './teams.service';
 import { CreateTeamDto } from './dto/create-team.dto';
@@ -27,5 +27,10 @@ export class TeamsController {
   @Post(':id/members')
   addMember(@Param('id') id: string, @Body() addMemberDto: AddMemberDto) {
     return this.teamsService.addMember(id, addMemberDto);
+  }
+
+  @Delete(':id/members/:userId')
+  removeMember(@Param('id') id: string, @Param('userId') userId: string) {
+    return this.teamsService.removeMember(id, userId);
   }
 }

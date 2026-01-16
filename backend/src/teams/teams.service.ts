@@ -47,11 +47,27 @@ export class TeamsService {
     if (!team) {
       throw new NotFoundException(`Team with ID ${teamId} not found`);
     }
+    
+    // Check if already a member
+    const existing = await this.membersRepository.findOne({
+        where: { teamId, userId: addMemberDto.userId }
+    });
+    
+    if (existing) {
+        return existing;
+    }
 
     return this.membersRepository.save({
       teamId,
       ...addMemberDto,
     });
+  }
+
+  async removeMember(teamId: string, userId: string): Promise<void> {
+    const result = await this.membersRepository.delete({ teamId, userId });
+    if (result.affected === 0) {
+       throw new NotFoundException(`Member not found in team`);
+    }
   }
 
   async findOne(id: string): Promise<Team> {

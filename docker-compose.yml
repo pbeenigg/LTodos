@@ -1,8 +1,9 @@
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
     image: postgres:15-alpine
+    container_name: ltodo-postgres
     environment:
       POSTGRES_USER: ${DB_USER:-postgres}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-postgres}
@@ -13,9 +14,10 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
-      - app-network
+      - ltodo-network
 
   backend:
+    container_name: ltodo-backend
     build: ./backend
     ports:
       - "3000:3000"
@@ -29,19 +31,19 @@ services:
     depends_on:
       - postgres
     networks:
-      - app-network
-
+      - ltodo-network
   frontend:
+    container_name: ltodo-frontend
     build: ./frontend
     ports:
       - "8080:80"
     depends_on:
       - backend
     networks:
-      - app-network
+      - ltodo-network
 
 networks:
-  app-network:
+  ltodo-network:
     driver: bridge
 
 volumes:

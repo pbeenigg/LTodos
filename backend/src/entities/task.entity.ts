@@ -1,4 +1,15 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+  JoinColumn,
+} from 'typeorm';
 import { User } from './user.entity';
 import { Team } from './team.entity';
 import { TaskHistory } from './task-history.entity';
@@ -78,14 +89,31 @@ export class Task {
   @Column({ nullable: true, type: 'timestamp' })
   reminderTime: Date;
 
+  @Column({ default: false })
+  isReminderSent: boolean;
+
   @Column({ nullable: true })
   recurrenceRule: string; // RRULE string
+
+  @Column({ nullable: true, type: 'timestamp' })
+  lastRecurrenceDate: Date;
+
+  @Column({ nullable: true })
+  originTaskId: string;
+
+  @ManyToOne(() => Task, { onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'originTaskId' })
+  originTask: Task;
 
   @OneToMany(() => TaskHistory, (history) => history.task)
   history: TaskHistory[];
 
   @OneToMany(() => Comment, (comment) => comment.task)
   comments: Comment[];
+
+  @ManyToMany(() => User)
+  @JoinTable({ name: 'task_followers' })
+  followers: User[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -1,8 +1,20 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Request,
+  Query,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('tasks')
@@ -15,8 +27,8 @@ export class TasksController {
   }
 
   @Get()
-  findAll(@Request() req) {
-    return this.tasksService.findAll(req.user);
+  findAll(@Query() filterDto: GetTasksFilterDto, @Request() req) {
+    return this.tasksService.findAll(filterDto, req.user);
   }
 
   @Get(':id')
@@ -25,12 +37,26 @@ export class TasksController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto, @Request() req) {
+  update(
+    @Param('id') id: string,
+    @Body() updateTaskDto: UpdateTaskDto,
+    @Request() req,
+  ) {
     return this.tasksService.update(id, updateTaskDto, req.user);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.tasksService.remove(id);
+  }
+
+  @Post(':id/followers')
+  addFollower(@Param('id') id: string, @Request() req) {
+    return this.tasksService.addFollower(id, req.user);
+  }
+
+  @Delete(':id/followers')
+  removeFollower(@Param('id') id: string, @Request() req) {
+    return this.tasksService.removeFollower(id, req.user);
   }
 }

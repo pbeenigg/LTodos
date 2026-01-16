@@ -14,6 +14,9 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { TasksModule } from './tasks/tasks.module';
 import { TeamsModule } from './teams/teams.module';
+import { CommentsModule } from './comments/comments.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { Notification } from './entities/notification.entity';
 
 @Module({
   imports: [
@@ -30,7 +33,7 @@ import { TeamsModule } from './teams/teams.module';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User, Team, TeamMember, Task, TaskHistory, Comment],
+        entities: [User, Team, TeamMember, Task, TaskHistory, Comment, Notification],
         synchronize: true, // Auto-create tables (dev only)
       }),
       inject: [ConfigService],
@@ -39,6 +42,8 @@ import { TeamsModule } from './teams/teams.module';
     AuthModule,
     TasksModule,
     TeamsModule,
+    CommentsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

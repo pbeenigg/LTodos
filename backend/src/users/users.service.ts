@@ -37,7 +37,16 @@ export class UsersService {
   async findByEmail(email: string): Promise<User> {
     return this.usersRepository.findOne({
       where: { email },
-      select: ['id', 'email', 'password', 'name', 'createdAt', 'updatedAt'], // Select password for auth check
+      select: ['id', 'email', 'password', 'name', 'createdAt', 'updatedAt', 'notificationPreferences'], // Select password for auth check
     });
+  }
+
+  async update(id: string, attrs: Partial<User>): Promise<User> {
+      const user = await this.findOne(id);
+      if (!user) {
+          throw new Error('User not found');
+      }
+      Object.assign(user, attrs);
+      return this.usersRepository.save(user);
   }
 }

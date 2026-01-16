@@ -30,4 +30,11 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ type: 'simple-json', nullable: true })
+  notificationPreferences: {
+    email: boolean;
+    web: boolean;
+    advanceNotice: number; // minutes
+  };
 }

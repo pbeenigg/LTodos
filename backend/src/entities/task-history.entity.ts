@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Task } from './task.entity';
 import { User } from './user.entity';
 
@@ -6,9 +13,6 @@ import { User } from './user.entity';
 export class TaskHistory {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column()
-  taskId: string;
 
   @ManyToOne(() => Task, (task) => task.history, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'taskId' })
@@ -22,9 +26,6 @@ export class TaskHistory {
 
   @Column({ nullable: true, type: 'text' })
   newValue: string;
-
-  @Column()
-  changedById: string;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'changedById' })
