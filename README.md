@@ -1,6 +1,17 @@
-# LTodos (待办事项应用)
+# LTodos (待办事项)
 
-![LTodos Banner](docs/dashboard1.jpg)
+<div align="center">
+
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![NestJS](https://img.shields.io/badge/nestjs-%23E0234E.svg?style=for-the-badge&logo=nestjs&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/tailwindcss-%2338B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
+
+![Visitor Count](https://visitor-badge.laobi.icu/badge?page_id=LTodos.README)
+
+</div>
 
 基于 NestJS 和 React 构建的现代化全栈待办事项应用。支持多语言、团队协作和实时通知。
 
